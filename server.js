@@ -33,6 +33,7 @@ app.listen(PORT, console.log('Server running in ', process.env.NODE_ENV, ' mode 
 
 const express = require('express');
 const dotenv = require('dotenv');
+const connectDB = require('./config/db');
 
 //add this line after adding route folder.
 const hospitals = require('./routes/hospitals');    //hospitals var refers to path of routes to hospital
@@ -41,11 +42,23 @@ const hospitals = require('./routes/hospitals');    //hospitals var refers to pa
 //config get JSON as parameter.
 dotenv.config({path:'./config/config.env'});
 
+//connect to db
+connectDB();
 
 const app=express();
+
+//body parser
+app.use(express.json()); //ให้สามารถ pass json ได้ดีขึ้น
 
 //add this line after adding route folder.
 app.use('/api/v1/hospitals', hospitals);    //if request that use path [para 1] was sent to this server.js, transfer the req to [para 2].
 
 const PORT=process.env.PORT || 5000;
-app.listen(PORT, console.log('Server running in ', process.env.NODE_ENV, ' mode on port ', PORT));
+const server = app.listen(PORT, console.log('Server running in ', process.env.NODE_ENV, ' mode on port ', PORT));
+
+//handle unhandled promise rejections
+process.on('unhandledRejection', (err, promise) =>{
+    console.log(`Error: ${err.message}`);
+    //close server and exit process
+    server.close(() => process.exit(1));
+})
