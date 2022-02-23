@@ -34,9 +34,11 @@ app.listen(PORT, console.log('Server running in ', process.env.NODE_ENV, ' mode 
 const express = require('express');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
+const cookieParser = require('cookie-parser')
 
-//add this line after adding route folder.
+//add this line after adding route folder. It is route file
 const hospitals = require('./routes/hospitals');    //hospitals var refers to path of routes to hospital
+const auth = require('./routes/auth');
 
 //Load all env vars from config.env that we just created.
 //config get JSON as parameter.
@@ -50,8 +52,12 @@ const app=express();
 //body parser
 app.use(express.json()); //ให้สามารถ pass json ได้ดีขึ้น
 
+//cookie parser
+app.use(cookieParser());
+
 //add this line after adding route folder.
 app.use('/api/v1/hospitals', hospitals);    //if request that use path [para 1] was sent to this server.js, transfer the req to [para 2].
+app.use('/api/v1/auth', auth);
 
 const PORT=process.env.PORT || 5000;
 const server = app.listen(PORT, console.log('Server running in ', process.env.NODE_ENV, ' mode on port ', PORT));
