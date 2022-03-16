@@ -12,10 +12,18 @@ exports.getAppointments=async (req,res,next)=>{
     }
     //If you are an admin, you cann see all
     else{
-        query=Appointment.find().populate({
+        if(req.params.hospitalId){
+            query=Appointment.find({hospital:req.params.hospitalId}).populate({
+                path:'hospital',
+                select: 'name province tel'
+            });
+        }
+        else{
+            query=Appointment.find().populate({
             path:'hospital',
             select: 'name province tel'
         });
+        }
     }
     try {
         const appointments= await query;
