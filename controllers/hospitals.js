@@ -4,7 +4,6 @@ const Hospital = require("../models/Hospital");
 //@route GET /api/v1/hospitals
 //@access Public
 exports.getHospitals = async(req, res, next) => {
-  try {
     //*code b/f adding query condition
     // const hospitals = await Hospital.find(req.query);
     // console.log(req.query);
@@ -43,6 +42,8 @@ exports.getHospitals = async(req, res, next) => {
     const limit=parseInt(req.query.limit,10)||25;
     const startIndex=(page-1)*limit;
     const endIndex=page*limit;
+
+    try {
     const total=await Hospital.countDocuments();
 
     query=query.skip(startIndex).limit(limit);
