@@ -1,7 +1,7 @@
 const express = require('express');
 // const { route } = require('express/lib/application');
 // add this after controller is created
-const {getHospitals, getHospital, createHospital, deleteHospital, updateHospital} = require('../controllers/hospitals');
+const {getHospitals, getHospital, createHospital, deleteHospital, updateHospital, getVacCenters} = require('../controllers/hospitals');
 
 //include other resources routers
 const appointmentRouter=require('./appointments');
@@ -9,9 +9,12 @@ const appointmentRouter=require('./appointments');
 const router=express.Router();
 
 const {protect, authorize} = require('../middleware/auth');
+const { route } = require('./appointments');
 
 //Re-route into other resource routers
 router.use('/:hospitalId/appointments/', appointmentRouter);
+
+router.route('/vacCenters').get(getVacCenters);
 
 router.route('/').get(getHospitals).post(protect, authorize("admin"), createHospital);
 router.route('/:id').get(getHospital).put(protect, authorize("admin"), updateHospital).delete(protect, authorize("admin"), deleteHospital);
