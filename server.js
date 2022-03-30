@@ -42,7 +42,12 @@ const auth = require('./routes/auth');
 
 //!
 const appointments = require('./routes/appointments');
-
+const mongoSanitize = require('express-mongo-sanitize');
+const helmet = require('helmet');
+const xss = require('xss-clean');
+const rateLimit = require('express-rate-limit');
+const hpp=require('hpp');
+const cors = require('cors');
 //Load all env vars from config.env that we just created.
 //config get JSON as parameter.
 dotenv.config({path:'./config/config.env'});
@@ -57,6 +62,29 @@ app.use(express.json()); //ให้สามารถ pass json ได้ดี
 
 //cookie parser
 app.use(cookieParser());
+
+//Sanitize data
+app.use(mongoSanitize());
+
+//Set security header
+app.use(helmet());
+
+//Prevent XSS attacks
+app.use(xss());
+
+//Rate Limit
+const limiter = rateLimit({
+    windowMs:10*60*1000,//10 mins
+    max:1
+})
+
+app.use(limiter);
+
+//Prevent http param pollutions
+app.use(hpp());
+
+//Enable CORS
+app.use(cors());
 
 //add this line after adding route folder.
 app.use('/api/v1/hospitals', hospitals);    //if request that use path [para 1] was sent to this server.js, transfer the req to [para 2].
