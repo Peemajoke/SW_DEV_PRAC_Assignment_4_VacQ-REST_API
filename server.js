@@ -48,6 +48,28 @@ const xss = require('xss-clean');
 const rateLimit = require('express-rate-limit');
 const hpp=require('hpp');
 const cors = require('cors');
+
+//for swagger
+const swaggerJsDoc = require('swagger-jsdoc');
+const swaggerUI = require('swagger-ui-express');
+
+const swaggerOptions={
+    swaggerDefinition:{
+        openapi: '3.0.0',
+        info:{
+            title: 'Library API',
+            version: '1.0.0',
+            description: 'A simple Express VacQ API'
+        },
+        servers:[
+            {
+                url:'http://localhost:5000/api/v1'
+            }
+        ],
+    },
+    apis:['./routes/*.js'],
+};
+
 //Load all env vars from config.env that we just created.
 //config get JSON as parameter.
 dotenv.config({path:'./config/config.env'});
@@ -75,7 +97,7 @@ app.use(xss());
 //Rate Limit
 const limiter = rateLimit({
     windowMs:10*60*1000,//10 mins
-    max:1
+    max:100
 })
 
 app.use(limiter);
@@ -85,6 +107,10 @@ app.use(hpp());
 
 //Enable CORS
 app.use(cors());
+
+//Enable swagger
+const swaggerDocs=swaggerJsDoc(swaggerOptions);
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocs));
 
 //add this line after adding route folder.
 app.use('/api/v1/hospitals', hospitals);    //if request that use path [para 1] was sent to this server.js, transfer the req to [para 2].
