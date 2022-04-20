@@ -1,4 +1,12 @@
+# package directories
+node_modules
+jspm_packages
+
+# Serverless directories
+.serverless
+
+#from the original .gitignore
 #ignore all node module
 node_modules/*
 #ignore config file
-# config/config.env
+config/config.env
