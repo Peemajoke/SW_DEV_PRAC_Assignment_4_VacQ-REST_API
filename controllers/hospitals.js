@@ -1,5 +1,5 @@
 const Hospital = require("../models/Hospital");
-const vacCenter = require('../models/vacCenter');
+// const vacCenter = require('../models/vacCenter');
 const res = require("express/lib/response");
 
 //@desc Get all hospitals
